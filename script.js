@@ -5,22 +5,22 @@ function onLoad() {
     canvas.height = window.innerHeight;
     const img = new Image();
     img.src = 'tbh.png';
-    img.onload = () => { ctx.drawImage(img, canvas.width / 2.8, canvas.height / 4) }
+    img.onload = () => { ctx.drawImage(img, canvas.width / 2 - 500 / 2, canvas.height / 2 - 500 / 2) }
 }
 
 function random(from, to) {
-    return Math.floor(Math.random() * (to-from + 1)) + from;
+    return Math.floor(Math.random() * (to - from + 1)) + from;
 }
 
 function rng(from, to) {
     let rngSet = []
-    for (let index = from; index < to+1; index++) {
-        rngSet.push({number: index, count: 0})
+    for (let index = from; index < to + 1; index++) {
+        rngSet.push({ number: index, count: 0 })
     }
     console.log(rngSet)
-    
+
     for (let index = 0; index < 100; index++) {
-        rngSet[random(from,to)].count++;
+        rngSet[random(from, to)].count++;
     }
     console.log(rngSet)
 }
@@ -46,11 +46,11 @@ function animation() {
             context.fillRect(this.x, this.y, this.size, this.size)
         }
         update() {
-            if(this.veltime-- > 0) {
+            if (this.veltime-- > 0) {
                 this.y += this.vy;
                 this.x += this.vx;
             }
-                
+
             else
                 this.y += 5;
         }
@@ -79,12 +79,12 @@ function animation() {
     }
     const img = new Image();
     img.src = 'tbh.png';
-    
+
     let globalID;
     function animate() {
         cancelAnimationFrame(globalID)
         ctx.clearRect(0, 0, canvas.width, canvas.height)
-        ctx.drawImage(img, canvas.width / 2.8, canvas.height / 4);
+        ctx.drawImage(img, canvas.width / 2 - 500 / 2, canvas.height / 2 - 500 / 2);
         effect.draw(ctx);
         effect.update();
         globalID = requestAnimationFrame(animate);
@@ -92,7 +92,7 @@ function animation() {
 
     const effect = new Effect(canvas.width, canvas.height, 1000);
     animate();
-    setTimeout(() => {cancelAnimationFrame(globalID)}, 4000);
+    setTimeout(() => { cancelAnimationFrame(globalID) }, 4000);
 }
 
 function yippie() {

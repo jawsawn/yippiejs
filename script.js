@@ -2,6 +2,8 @@ let canvas;
 let ctx;
 let img;
 let gid = null;
+const audio1 = new Audio('yippie.mp3');
+const audio2 = new Audio('yippie_break.mp3');
 
 function onLoad() {
     canvas = document.getElementById("canvas1");
@@ -14,6 +16,7 @@ function onLoad() {
 }
 
 function animation(special_color = "50%") {
+
     class Particle {
         constructor() {
             this.x = canvas.width / 2;
@@ -22,15 +25,15 @@ function animation(special_color = "50%") {
             this.vx = (Math.random() * 10 + 10) * (Math.random() * 2 - 1);
             this.vy = (Math.random() * 10 + 10) * (Math.random() * 2 - 1);
             this.color = Math.floor(Math.random() * 360);
-
         }
+
         draw(context) {
-            if(this.y > canvas.height ) {
-                return;
-            }
+            if (this.y > canvas.height) return;
             context.fillStyle = `hsl(${this.color}, 100%, ${special_color})`;
             context.fillRect(this.x, this.y, this.size, this.size);
+            this.update();
         }
+
         update() {
             this.y += this.vy;
             this.x += this.vx;
@@ -38,59 +41,37 @@ function animation(special_color = "50%") {
         }
     }
 
-    class Effect {
-        constructor(width, height, amount) {
-            this.width = width;
-            this.height = height;
-            this.amount = amount;
-            this.particlesArray = [];
-            this.init();
-        }
-        init() {
-            for (let index = 0; index < this.amount; index++) {
-                this.particlesArray.push(new Particle());
-            }
-        }
-        draw(context) {
-            let limit = 0;
-            this.particlesArray.forEach(e => e.draw(context))
-            this.particlesArray.forEach(e => e.y > canvas.height ? limit++ : limit--)
-            if(limit == this.amount)
-                cancelAnimationFrame(gid)
-        }
-        update() {
-            this.particlesArray.forEach(e => e.update())
-        }
-    }
+    const particle_amount = 1000;
+    let particlesArray = [];
 
+    for (let index = 0; index < particle_amount; index++)
+        particlesArray.push(new Particle());
+
+    function AnimateParticle(context) {
+        particlesArray.forEach(e => e.y < canvas.height ? e.draw(context) : particlesArray.splice(particlesArray.indexOf(e), 1))
+        if (particlesArray.length == 0) cancelAnimationFrame(gid)
+    }
 
     function animate() {
+        //Make sure requestAnimationFrame is on top or else it cannot be canceled
         gid = requestAnimationFrame(animate)
+
         ctx.clearRect(0, 0, canvas.width, canvas.height)
-        if(special_color == "50%")
-            ctx.drawImage(img, canvas.width / 2 - img.width / 2, canvas.height / 2 - img.height / 2);
-        effect.draw(ctx);
-        effect.update();
+        if (special_color == "50%") ctx.drawImage(img, canvas.width / 2 - img.width / 2, canvas.height / 2 - img.height / 2);
+        AnimateParticle(ctx);
     }
 
-    const effect = new Effect(canvas.width, canvas.height, 1000);
     animate();
 }
 
 function yippie() {
-    new Audio('yippie.mp3').play();
-    if(gid) {
-        cancelAnimationFrame(gid);
-        gid = null;
-    }
+    audio1.play();
+    cancelAnimationFrame(gid);
     animation();
 }
 
 function yippie_break() {
-    new Audio('yippie_break.mp3').play();
-    if(gid) {
-        cancelAnimationFrame(gid);
-        gid = null;
-    }
+    audio2.play();
+    cancelAnimationFrame(gid);
     animation("0%");
 }

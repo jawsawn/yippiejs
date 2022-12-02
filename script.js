@@ -63,7 +63,7 @@ function animation(special_color = "50%") {
 
     animate();
 }
-
+//yeah
 function yippie() {
     audio1.play();
     cancelAnimationFrame(gid);
